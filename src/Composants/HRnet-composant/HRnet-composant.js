@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import { fr } from 'date-fns/locale';
+import ConfirmationModal from 'react-oc-modal-module';
 
 
 import { useDispatch } from 'react-redux';
@@ -14,32 +15,40 @@ const HRnetComponent = () => {
     const [dob, setDob] = useState(null);
     const [startDate, setStartDate] = useState(null);
     const [state, setState] = useState('');
-
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+  
     const firstNameRef = useRef();
     const lastNameRef = useRef();
     const streetRef = useRef();
     const cityRef = useRef();
     const zipCodeRef = useRef();
     const departmentRef = useRef();
-
+  
     const saveEmployee = (event) => {
-        event.preventDefault();
-        const employee = {
-            firstName: firstNameRef.current.value,
-            lastName: lastNameRef.current.value,
-            dob: dob,
-            startDate: startDate, 
-            address: {
-                street: streetRef.current.value,
-                city: cityRef.current.value,
-                state: state,
-                zipCode: zipCodeRef.current.value
-            },
-            department: departmentRef.current.value
-        };
-    
-        dispatch(addEmployee(employee));
+      event.preventDefault();
+      const employee = {
+        firstName: firstNameRef.current.value,
+        lastName: lastNameRef.current.value,
+        dob: dob,
+        startDate: startDate, 
+        address: {
+          street: streetRef.current.value,
+          city: cityRef.current.value,
+          state: state,
+          zipCode: zipCodeRef.current.value
+        },
+        department: departmentRef.current.value
+      };
+  
+      dispatch(addEmployee(employee));
+  
+      setModalMessage('Employee Created!');
+      setShowModal(true);
     };
+    const closeModal = () => {
+        setShowModal(false);
+      };
 
     return (
         <div>
@@ -103,8 +112,11 @@ const HRnetComponent = () => {
                 </form>
 
                 <button type="submit" form="create-employee" onClick={saveEmployee}>Save</button>
+
+                {showModal && (
+                    <ConfirmationModal message={modalMessage} onClose={closeModal} />
+                )}
             </div>
-            <div id="confirmation" className="modal">Employee Created!</div>
         </div>
     );
 }
