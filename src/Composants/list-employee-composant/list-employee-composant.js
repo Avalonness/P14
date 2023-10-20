@@ -1,25 +1,76 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTable, useSortBy } from 'react-table';
-import './list-employee-composant.css'; // Import du fichier CSS
+import './list-employee-composant.css';
 
 function EmployeeListComponent() {
-  // Convertir chaque objet Date en une chaîne de caractères
+  // Utilisation du Redux pour obtenir la liste des employés.
   const rawEmployees = useSelector(state => state.employees);
-  const employeesData = React.useMemo(() => {
-    return rawEmployees.map(emp => {
-      let dobStr = new Date(emp.dob).toLocaleDateString();
-      let startDateStr = new Date(emp.startDate).toLocaleDateString();
   
-      return {
-        ...emp,
-        dob: dobStr,
-        startDate: startDateStr
-      };
-    });
-  }, [rawEmployees]);
+  // États pour le filtrage, le nombre d'entrées à afficher et la pagination.
+  const [filterString, setFilterString] = useState('');
+  const [rowsToShow, setRowsToShow] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // Fonction pour vérifier si un employé correspond au filtre.
+  const employeeMatchesFilter = (employee, filter) => {
+    for (const key in employee) {
+      if (typeof employee[key] === 'object') {
+        for (const subKey in employee[key]) {
+          if (String(employee[key][subKey]).toLowerCase().includes(filter.toLowerCase())) {
+            return true;
+          }
+        }
+      } else if (String(employee[key]).toLowerCase().includes(filter.toLowerCase())) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  // Traitement des données des employés en fonction du filtre, de la pagination et du nombre d'entrées à afficher.
+  const employeesData = React.useMemo(() => {
+    // Filtrage des employés selon le texte du filtre.
+    const filteredEmployees = rawEmployees.filter(emp => filterString === '' || employeeMatchesFilter(emp, filterString));
+
+    // Détermination des indices de début et de fin pour la pagination.
+    const startIndex = (currentPage - 1) * rowsToShow;
+    const endIndex = startIndex + rowsToShow;
+
+    // Retourne une portion des employés filtrés en fonction de la pagination, et met à jour les champs de date.
+    return filteredEmployees
+      .slice(startIndex, endIndex)
+      .map(emp => {
+        let dobStr = new Date(emp.dob).toLocaleDateString();
+        let startDateStr = new Date(emp.startDate).toLocaleDateString();
+        return {
+          ...emp,
+          dob: dobStr,
+          startDate: startDateStr
+        };
+      });
+  }, [rawEmployees, filterString, rowsToShow, currentPage]);
+
+  // Calcul du nombre total d'employés après application du filtre.
+  const totalEmployeesAfterFilter = rawEmployees.filter(emp => filterString === '' || employeeMatchesFilter(emp, filterString)).length;
+  // Calcul du nombre total de pages.
+  const totalPages = Math.ceil(totalEmployeesAfterFilter / rowsToShow);
+
+  // Fonctions pour gérer la pagination.
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  }
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  }
+
+  // Définition des colonnes pour `react-table`.
   const columns = React.useMemo(
     () => [
       { Header: 'First Name', accessor: 'firstName' },
@@ -35,6 +86,7 @@ function EmployeeListComponent() {
     []
   );
 
+  // Utilisation du hook `useTable` pour initialiser le tableau.
   const {
     getTableProps,
     getTableBodyProps,
@@ -48,10 +100,28 @@ function EmployeeListComponent() {
     },
     useSortBy 
   );
-  
+
   return (
     <div id="employee-div" className="container">
       <h1>Current Employees</h1>
+
+      <input
+        type="text"
+        placeholder="Filter by any field..."
+        value={filterString}
+        onChange={e => setFilterString(e.target.value)}
+      />
+
+      <select 
+        value={rowsToShow}
+        onChange={e => setRowsToShow(Number(e.target.value))}
+      >
+        <option value={10}>10</option>
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={100}>100</option>
+      </select>
+
       <table id="employee-table" className="styled-table" {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
@@ -80,6 +150,17 @@ function EmployeeListComponent() {
           })}
         </tbody>
       </table>
+
+      <div className="entries-info">
+      Showing {Math.min((currentPage - 1) * rowsToShow + 1, totalEmployeesAfterFilter)} to {Math.min(currentPage * rowsToShow, totalEmployeesAfterFilter)} of {totalEmployeesAfterFilter} entries.
+      </div>
+      
+      <div className="pagination-controls">
+        <button onClick={goToPreviousPage} disabled={currentPage === 1}>Précédent</button>
+        <span>Page {currentPage} sur {totalPages}</span>
+        <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
+      </div>
+
       <Link to="/">Home</Link>
     </div>
   );
