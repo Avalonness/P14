@@ -55,7 +55,7 @@ const HRnetComponent = () => {
             <div className="title">
                 <h1>HRnet</h1>
             </div>
-            <div className="container">
+            <div className="container-hrnet">
                 <Link to="/employee">View Current Employees</Link>
                 <h2>Create Employee</h2>
                 <form id="create-employee">

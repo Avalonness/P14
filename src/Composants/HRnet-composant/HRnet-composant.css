@@ -4,7 +4,7 @@
     justify-content: center;
 }
 
-.container {
+.container-hrnet {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,3 +20,121 @@ label {
 .address {
     margin-top: 10px;
 }
+
+/* Styles généraux pour le conteneur */
+.container-hrnet {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Titre */
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.title h1 {
+  font-size: 36px;
+  color: #333;
+}
+
+/* Liens */
+a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Formulaires */
+form {
+  margin: 20px 0;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: 70%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+fieldset.address {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* Bouton de sauvegarde */
+button[type="submit"] {
+  background-color: #009879;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #009879;
+}
+
+/* Modal */
+.confirmation-modal {
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-message {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.modal-close {
+  text-align: center;
+}
+
+.modal-close button {
+  background-color: #009879;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.modal-close button:hover {
+  background-color: #009879;
+}
+

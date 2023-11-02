@@ -54,6 +54,7 @@ function EmployeeListComponent() {
 
   // Calcul du nombre total d'employés après application du filtre.
   const totalEmployeesAfterFilter = rawEmployees.filter(emp => filterString === '' || employeeMatchesFilter(emp, filterString)).length;
+  
   // Calcul du nombre total de pages.
   const totalPages = Math.ceil(totalEmployeesAfterFilter / rowsToShow);
 
@@ -151,14 +152,16 @@ function EmployeeListComponent() {
         </tbody>
       </table>
 
-      <div className="entries-info">
-      Showing {Math.min((currentPage - 1) * rowsToShow + 1, totalEmployeesAfterFilter)} to {Math.min(currentPage * rowsToShow, totalEmployeesAfterFilter)} of {totalEmployeesAfterFilter} entries.
-      </div>
-      
-      <div className="pagination-controls">
-        <button onClick={goToPreviousPage} disabled={currentPage === 1}>Précédent</button>
-        <span>Page {currentPage} sur {totalPages}</span>
-        <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
+      <div className="entries-pagination-container">
+        <div className="entries-info">
+          Showing {Math.min((currentPage - 1) * rowsToShow + 1, totalEmployeesAfterFilter)} to {Math.min(currentPage * rowsToShow, totalEmployeesAfterFilter)} of {totalEmployeesAfterFilter} entries.
+        </div>
+        
+        <div className="pagination-controls">
+          <button onClick={goToPreviousPage} disabled={currentPage === 1}>Précédent</button>
+          <span>Page {currentPage} sur {totalPages}</span>
+          <button onClick={goToNextPage} disabled={currentPage === totalPages}>Suivant</button>
+        </div>
       </div>
 
       <Link to="/">Home</Link>
